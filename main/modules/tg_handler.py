@@ -488,6 +488,91 @@ async def start_uploading(data):
             except:
 
                 pass  
+        elif:
+            if data["480p"]=='10':
+            title = data["title"]
+            dbtit = data["title"]
+            link = data["link"]
+            size = data["size"]
+            size = size.replace("GB", " GiB")
+            nyaasize = size
+            subtitl = data["subtitle"]
+            subtitle = replace_text_with_mapping(subtitl, mapping)
+            name, ext = title.split(".")
+
+            name += f" [AniDL]." + ext
+
+            KAYO_ID =  -1001895203720
+            uj_id = 1159872623
+            DATABASE_ID = -1001895203720
+            bin_id = -1002062055380
+            name = name.replace(f" [AniDL].","").replace(ext,"").strip()
+            id, img, tit = await get_anime_img(get_anime_name(title))
+            msg = await app.send_photo(bin_id,photo=img,caption=title)
+
+            print("Downloading --> ",name)
+            img, caption, alink = await get_anilist_data(title)
+            await asyncio.sleep(5)
+            await status.edit(await status_text(f"Downloading {name}"),reply_markup=button1)
+            file = await downloader(msg,link,size,title)
+
+            await msg.edit(f"Download Complete : {name}")
+            print("Encoding --> ",name)
+
+            duration = get_duration(file)
+            durationx = get_durationx(file)
+            filed = os.path.basename(file)
+            filed = filed.replace(filed[-14:], ".mkv")
+            filed = filed.replace("[Erai-raws]", "[AniDL]")
+            filed = filed.replace("[1080p][Multiple Subtitle]", "[1080p Web-DL]")
+            filed = filed.replace("[1080p]", "[1080p Web-DL]")
+            filed = filed.replace("2nd Season", "S2")
+            filed = filed.replace("3rd Season", "S3")
+            filed = filed.replace("4th Season", "S4")
+            filed = filed.replace("5th Season", "S5")
+            filed = filed.replace("6th Season", "S6")
+            filed = filed.replace("7th Season", "S7")
+            razo = filed.replace("[1080p Web-DL]", "[480p x265] @animxt")
+            fpath = "downloads/" + filed
+            ghostname = name
+            ghostname = ghostname.replace("[1080p][Multiple Subtitle]", "")
+            ghostname = ghostname.replace("[1080p]", "")
+            ghostname = ghostname.replace("2nd Season", "S2")
+            ghostname = ghostname.replace("3rd Season", "S3")
+            subtitle = subtitle.replace("][", ", ")
+            subtitle = subtitle.replace("[", "")
+            subtitle = subtitle.replace("]", "")     
+    
+            os.rename(file,"video.mkv")
+            titlx = title.replace('[1080p][Multiple Subtitle]', '[Web][480p x265 10Bit][Opus][Erai-raws]')
+            titm = f"**[AniDL] {titlx}**"
+            tito = f"[AniDL] {titlx}"
+            main = await app.send_photo(KAYO_ID,photo=img, caption=titm)
+            video_path="video.mkv"
+        
+            audio_language = get_audio_language(video_path)
+            if audio_language:
+                print("Audio Track Language:", audio_language)
+            else:
+                print("Failed to get audio language.")
+            compressed = await compress_video(duration,main,tito)
+    
+
+            if compressed == "None" or compressed == None:
+
+                print("Encoding Failed Uploading The Original File")
+
+                os.rename("video.mkv",fpath)
+
+            else:
+
+                os.rename("out.mkv",fpath)
+  
+            print("Uploading --> ",name)
+            video = await upload_videox(msg,title,img,fpath,id,tit,name,size,main,subtitle,nyaasize,audio_language, alink)
+            print("480title: ", data["title"])
+            save_480p(data["title"])
+            
         else:
             print("All format uploaded.")
             id = None
