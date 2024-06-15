@@ -393,6 +393,116 @@ async def upload_video1080p(msg: Message, title, img, file, id, tit, name, ttl, 
                 message_id=postid,
                 reply_markup=fmarkup
             )
+
+async def upload_videox(msg: Message, title, img, file, id, tit, name, ttl, main, subtitle, nyaasize, audio_info, alink):
+
+    try:
+        fuk = isfile(file)
+        if fuk:
+            r = msg
+            c_time = time.time()
+            duration = get_duration(file)
+            durationx = get_durationx(file)
+            size1080p = get_filesize(file)
+            ep_num = get_epnum(name)
+            print(ep_num)
+            rest = tit
+            filed = os.path.basename(file)
+            print('filed: ', filed)
+            anidltitle = filed.replace("[AniDL] ", "")
+            anidltitle = anidltitle.replace("[1080p Web-DL].mkv", "")
+            filed = filed.replace("[1080p Web-DL]", "[Web][480p x265 10Bit][Opus][Erai-raws]")
+            fukpath = "downloads/" + filed
+            caption = f"{filed}"
+
+            kayo_id = -1001895203720
+            gay_id = 1159872623
+            upid = int(main.id)
+            print(upid)
+            x = await app.edit_message_media(
+                chat_id=kayo_id,
+                message_id=upid,
+                media=InputMediaDocument(file),
+                file_name=filed
+            )
+            await asyncio.sleep(3)
+            hash = "".join([random.choice(ascii_letters + digits) for n in range(50)])
+            save_file_in_db(filed, hash, subtitle, img, audio_info, tit, alink, size1080p, upid)
+            print(hash)
+            ddlurl = f"https://anidl.ddlserverv1.me.in/beta/{hash}"
+            gcaption = f"`📺 {filed}`\n\n`🔗 EP - {ep_num}:  https://anidl.ddlserverv1.me.in/beta/{hash}`" + "\n\n" + f"🔠 __{tit}__" + "\n" + "\n" + f"📝 `{subtitle}`"
+            da_url = "https://da.gd/"
+            shorten_url = f"{da_url}shorten"
+            response = requests.post(shorten_url, params={"url": ddlurl})
+            dalink = response.text.strip()
+            dalink = dalink.replace("https://", "")
+            dalink = dalink.replace("http://", "")
+            ouolink = f"http://ouo.press/qs/jezWr0hG?s={dalink}"
+            ulvis = f"https://ulvis.net/api.php?url={ouolink}&private=1"
+            result = requests.get(ulvis)
+            fxylink = result.text
+            save_link480p(title, fxylink)
+            dl_markup = InlineKeyboardMarkup(
+                [
+                    [
+                        InlineKeyboardButton(text="🔗 Download Link", url=f"https://anidl.ddlserverv1.me.in/beta/{hash}")
+                    ]
+                ]
+            )
+            await app.edit_message_caption(
+                chat_id=kayo_id,
+                message_id=upid,
+                caption=gcaption
+            )
+            await asyncio.sleep(3)
+            await app.edit_message_reply_markup(
+                chat_id=kayo_id,
+                message_id=upid,
+                reply_markup=dl_markup
+            )
+            anidl_id=-1001234112068
+            code480p = fxylink
+            code720p = await get_link720p(title)
+            code1080p = await get_link1080p(title)
+            print(code720p)
+           
+            size720p = await get_size720p(title)
+            size1080p = "337 MBs"
+            dl480pcap = f"<b>{anidltitle}</b>\n<i>({tit})</i>\n<blockquote><b><a href={code480p}>🗂️ [Web ~ Erai-raws][480p x265 10Bit CRF@23][JAP ~ Opus][Multiple Subs ~ {subtitle}]</a></b> || <code>{size480p}</code></blockquote>"
+            dl720pcap = f"\n<blockquote><b><a href={code720p}>🗂️ [Web ~ Erai-raws][720p x265 10Bit CRF@22][JAP ~ Opus][Multiple Subs ~ {subtitle}]</a></b> || <code>{size720p}</code></blockquote>"
+            anidlcap3 = dl480pcap + dl720pcap + "\n" + f"<blockquote><b><a href={code1080p}>🗂️ [Web ~ Erai-raws][1080p x265 10Bit CRF@22][JAP ~ AAC][Multiple Subs ~ {subtitle}]</a></b> || <code>{size1080p}</code></blockquote>\n#airing #single_audio #eng_sub"
+            fmarkup=InlineKeyboardMarkup(
+                    [
+                        [
+                            InlineKeyboardButton(
+                                text="🔗 480p",
+                                url=code480p,
+                            ),
+                            InlineKeyboardButton(
+                                text="🔗 720p",
+                                url=code720p,
+                            ),
+                            InlineKeyboardButton(
+                                text="🔗 1080p",
+                                url=code1080p,
+                            ),
+                        ],
+                        [
+                            InlineKeyboardButton(
+                                text="🌐 AIRING ANIME",
+                                url="https://anidl.org/airing-anime",
+                            ),
+                        ],
+                        
+                    ],
+            )
+            await asyncio.sleep(3)
+            print("title upload: ", title)
+            postid = await get_postid(title)
+            print(postid)
+            ongid = -1001159872623
+            await app.edit_message_text(anidl_id, postid, text=anidlcap3, reply_markup=fmarkup, parse_mode=enums.ParseMode.HTML)
+            await asyncio.sleep(3)
     except Exception as e:
         await app.send_message(kayo_id, text="Something Went Wrong!" + "\n" + e)
     try:
