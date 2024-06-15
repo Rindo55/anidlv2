@@ -4,11 +4,12 @@ from motor.motor_asyncio import AsyncIOMotorClient as MongoClient
 from config import MONGO_DB_URI
 print("[INFO]: STARTING MONGO DB CLIENT")
 mongo_client = MongoClient(MONGO_DB_URI)
-db = mongo_client.autoanime480p
+db = mongo_client.beta
+dbz = mongo_client.autoanime480p
 dbx = mongo_client["anidl"]
 filesdb = dbx["files"]
 animedb = db.animes
-uploadsdb = db.uploads
+uploadsdb = dbz.uploads
 user_data = db['users']
 
 async def present_user(user_id : int):
@@ -40,6 +41,17 @@ async def del_anime(name):
     except pymongo.errors.PyMongoError as e:
         print(f"Error deleting anime: {e}")
 
+async def del_animex(name): 
+    try:
+        animesdb = dbz.animes
+        result = await animesdb.delete_one({"name": name})
+        if result.deleted_count > 0:
+            print(f"Successfully deleted anime: {name}")
+        else:
+            print(f"No anime found with the name: {name}")
+    except pymongo.errors.PyMongoError as e:
+        print(f"Error deleting anime: {e}")
+        
 async def get_uploads(): 
     anime_list = []
     async for name in uploadsdb.find():
