@@ -16,7 +16,7 @@ from main.modules.thumbnail import generate_thumbnail
 
 import os
 
-from main.modules.db import del_anime, save_uploads, is_fid_in_db, is_tit_in_db, save_480p, save_720p, save_1080p
+from main.modules.db import del_anime, del_animex, save_uploads, is_fid_in_db, is_tit_in_db, save_480p, save_720p, save_1080p
 
 from main.modules.downloader import downloader
 
@@ -48,6 +48,7 @@ async def tg_handler():
                 id, name, video = await start_uploading(i)
                 print("Title: ", i["title"])
                 await del_anime(i["title"])
+                await del_animex(i["title"])
                 await save_uploads(i["title"])
                 await asyncio.sleep(30)
 
