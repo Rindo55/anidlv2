@@ -488,8 +488,7 @@ async def start_uploading(data):
             except:
 
                 pass  
-        elif:
-            if data["480p"]=='10':
+        elif data["480p"]=='10':
             title = data["title"]
             dbtit = data["title"]
             link = data["link"]
@@ -571,7 +570,7 @@ async def start_uploading(data):
             print("Uploading --> ",name)
             video = await upload_videox(msg,title,img,fpath,id,tit,name,size,main,subtitle,nyaasize,audio_language, alink)
             print("480title: ", data["title"])
-            save_480p(data["title"])
+            save_1080p(data["title"])
             
         else:
             print("All format uploaded.")
