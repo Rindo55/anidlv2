@@ -393,6 +393,20 @@ async def upload_video1080p(msg: Message, title, img, file, id, tit, name, ttl, 
                 message_id=postid,
                 reply_markup=fmarkup
             )
+    except Exception as e:
+        await app.send_message(kayo_id, text="Something Went Wrong!" + "\n" + e)
+    try:
+        
+            
+            await r.delete()
+
+            os.remove(file)
+
+            os.remove(thumbnail)
+
+    except:
+
+        pass
 
 async def upload_videox(msg: Message, title, img, file, id, tit, name, ttl, main, subtitle, nyaasize, audio_info, alink):
 
