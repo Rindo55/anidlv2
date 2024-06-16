@@ -129,7 +129,15 @@ mapping = {
     "hr": "HRV",
     "my": "MAY",
     "sk": "SLK",
-    "fil": "FIL"
+    "fil": "FIL",
+    "cn": "CHI",
+    "jp": "JAP",
+    "no": "NOB",
+    "se": "SWE",
+    "gr": "GRE",
+    "kr": "KOR",
+    "dk": "DAN",
+    "cz": "CES"
 }
 
 def get_audio_language(video_path):
