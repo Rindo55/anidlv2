@@ -59,7 +59,7 @@ async def get_uploads():
     return anime_list
 
 async def save_uploads(name):
-    uploadb = db.uploads
+    uploadb = dbz.uploads
     print("save_uploads: ", name)
     data = await uploadb.insert_one({"name": name})
     return
